@@ -64,10 +64,23 @@ iframe嵌入方式比较容易实现，不再赘述。
 
 ## <a id="what"><font color="black">5. single-spa</font></a>
 
+>  [single-spa官网](https://single-spa.js.org/)
+>
+> single-spa实现原理：
+>
+> 首先对微前端路由进行注册，使用single-spa充当微前端加载器，并作为单一入口来接受所有页面URL的访问，根据页面URL与微前端的匹配关系，选择加载对应的微前端模块，再由该微前端模块进行路由响应URL，即路由找到相应的组件，渲染页面内容。
+>
+> 首先通过single-spa对项目路由进行注册，当用户点击路由
 
+### 0. 单体应用比前端微服务化
+
+<img src="https://user-gold-cdn.xitu.io/2018/9/18/165ea5594bbb97ef?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" style="zoom:50%;" />
+
+### 1. 微前端架构
+
+<img src="https://user-gold-cdn.xitu.io/2018/9/18/165ea5594bd56c52?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img" style="zoom:50%;" />
 
 目前在前端开发工作中，
-
 目前随着企业工程项目体积越来越大
 
 
