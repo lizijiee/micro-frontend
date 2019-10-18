@@ -102,21 +102,13 @@ iframe嵌入方式比较容易实现，不再赘述。
 ## <a id="title9"><font color="black">参考文章</font></a>
 
 - [single-spa官网](https://single-spa.js.org/)
-
 - [微前端实践](https://juejin.im/post/5cadd7835188251b2f3a4bb0)
-
 - [用微前端的方式搭建类单页应用](https://www.cnblogs.com/meituantech/p/9604591.html)（以美团为例）
-
 - [前端单页应用微服务化解决方案2 - Single-SPA](https://juejin.im/post/5ba057695188255c953821c6)
-
 - [稍复杂例子single-spa-examples](https://github.com/CanopyTax/single-spa-examples.git)
-
 - [微前端 single-spa（独立部署内附代码）](https://juejin.im/post/5d3925615188257f3850de5a)
-
 - [微前端 —— 理论篇](https://segmentfault.com/a/1190000019957130)
-
 - [微前端入门  —— 餐饮项目](https://juejin.im/post/5d8adb8ff265da5ba12cd173#heading-0)
-
 - [微前端 single-spa —— 内附项目](https://juejin.im/post/5d3925615188257f3850de5a)
 
   
