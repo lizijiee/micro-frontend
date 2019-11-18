@@ -111,8 +111,8 @@ single-spa
 - [微前端 —— 理论篇](https://segmentfault.com/a/1190000019957130)
 - [微前端入门  —— 餐饮项目](https://juejin.im/post/5d8adb8ff265da5ba12cd173#heading-0)
 - [微前端 single-spa —— 内附项目](https://juejin.im/post/5d3925615188257f3850de5a)
-
 - [全栈增长工程师](https://segmentfault.com/blog/phodal?page=1)
+- [实施微前端的六种方式](https://segmentfault.com/a/1190000015566927)
 
 ## <a id="title10"><font color="black">参考代码</font></a>
 
