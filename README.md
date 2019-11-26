@@ -113,6 +113,10 @@ single-spa
 - [微前端 single-spa —— 内附项目](https://juejin.im/post/5d3925615188257f3850de5a)
 - [全栈增长工程师](https://segmentfault.com/blog/phodal?page=1)
 - [实施微前端的六种方式](https://segmentfault.com/a/1190000015566927)
+- [微前端 —— 理论篇（实际项目参考文章）](https://segmentfault.com/a/1190000019957130)
+- [microfront-end-single-spa](https://github.com/justwiner/microfront-end-single-spa)
+- [命令行服务器（http-server)和跨域](https://blog.csdn.net/weixin_43310551/article/details/86304618)
+
 
 ## <a id="title10"><font color="black">参考代码</font></a>
 
