@@ -29,6 +29,10 @@ export default class Menu_ extends React.Component {
                         <Icon type="desktop"/>
                         <Link to='/page4' style={{display: 'inline'}}>页面4</Link>
                     </MenuItem>
+                    <MenuItem key="6">
+                        <Icon type="desktop"/>
+                        <Link to='/page5' style={{display: 'inline'}}>页面5</Link>
+                    </MenuItem>
                 </Menu>
             </div>
         )

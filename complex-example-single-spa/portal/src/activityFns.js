@@ -13,7 +13,7 @@ export function menu(location) {
 }
 
 export function project1(location) {
-  return prefix(location, '', 'page1', 'page2')
+  return prefix(location, '', 'page1', 'page2', 'page5')
 }
 
 export function project2(location) {
