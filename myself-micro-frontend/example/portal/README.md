@@ -10,3 +10,5 @@
 注册 singleSpa.registerApplication（参数详情）
 
 启动 singleSpa.start()
+
+> [vue-single-spa](https://gitee.com/Janlaywss/vue-single-spa)
