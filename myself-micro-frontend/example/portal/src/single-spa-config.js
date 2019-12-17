@@ -6,6 +6,7 @@ import * as singleSpa from 'single-spa'; //导入single-spa
 const runScript = async (url) => {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
+        console.log('error测试', url)
         script.src = url;
         script.onload = resolve;
         script.onerror = reject;
@@ -21,7 +22,8 @@ singleSpa.registerApplication( //注册微前端服务
             // return 一个singleSpa 模块对象，模块对象来自于要加载的js导出
             // 如果这个函数不需要在线引入，只需要本地引入一块加载：
             // () => import('xxx/main.js')
-            await runScript('http://localhost:3004/app.js');
+            console.log(22222222);
+            await runScript('http://localhost:3000/app.js');
             return window.singleVue
         },
         location => location.pathname.startsWith('/vue') // 配置微前端模块前缀

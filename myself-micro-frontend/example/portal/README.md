@@ -12,3 +12,25 @@
 启动 singleSpa.start()
 
 > [vue-single-spa](https://gitee.com/Janlaywss/vue-single-spa)
+
+## portal项目启动
+
+>  yarn 安装node_modules
+>
+> yarn start 启动项目
+
+## 公共依赖抽离
+
+> [lerna](https://github.com/lerna/lerna)
+
+```javascript
+ externals: [
+    /^@portal\/*/,
+    /^lodash$/,
+    /^single-spa$/,
+    /^rxjs\/?.*$/,
+    /^react$/,
+    /.*react-dom.*/,
+  ],
+```
+

@@ -6,7 +6,8 @@ import Angular from "./Angular.jsx";
 import Vue from "./Vue.jsx";
 // const ReactComponent = React.lazy(() => import("./React.jsx"));
 
-const LoadableReact = Loadable({
+/*
+ const LoadableReact = Loadable({
   loader: () => import("./React.jsx"),
   loading: () => <div>Loading!!!!!!!!!!!!!!!!!!!!!!</div>
 });
@@ -18,15 +19,15 @@ const LoadableAngular = Loadable({
   loader: () => import("./Angular.jsx"),
   loading: () => <div>Loading!!!!!!!!!!!!!!!!!!!!!!</div>
 });
-
+ */
 class Sider extends React.Component {
   render() {
     return (
       <Switch>
         <Router>
-          <Route exact path="/react" component={LoadableReact} />
-          <Route exact path="/angular" component={LoadableAngular} />
-          <Route exact path="/vue" component={LoadableVue} />
+          <Route exact path="/react" component={ReactComponent} />
+          <Route exact path="/angular" component={Angular} />
+          <Route exact path="/vue" component={Vue} />
         </Router>
       </Switch>
     );

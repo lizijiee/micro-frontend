@@ -10,6 +10,13 @@ class App extends Component {
         <BrowserRouter>
           <Sider />
           <Content />
+          {/* 
+          <div id="angular-app"></div>
+          <div id="single-vue">
+            <div id="vue"></div>
+          </div>
+          <div id="react-app"></div> 
+          */}
         </BrowserRouter>
       </React.Fragment>
     );
