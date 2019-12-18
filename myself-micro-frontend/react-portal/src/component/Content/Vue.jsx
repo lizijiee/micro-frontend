@@ -1,6 +1,6 @@
 import React from "react";
-//  异步加载组件;
-export default class ReactComponent extends React.Component {
+
+class Vue extends React.Component {
   componentWillUnmount() {
     // 卸载异步操作设置状态
     clearTimeout(this.timeouter);
@@ -9,7 +9,14 @@ export default class ReactComponent extends React.Component {
     };
   }
   render() {
-    // return <div id="react-app" />;
-    return null; 
+    // return
+    //  (
+    //   <div id="single-vue">
+    //     <div id="vue" />
+    //   </div>
+    // );
+    return null;
   }
 }
+
+export default Vue;
