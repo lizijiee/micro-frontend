@@ -98,9 +98,39 @@ single-spa
 
 > 
 
+#### JS文件自动加载
+
+##### manifest.json生成   
+
+anifest
+[Vue-Cli项目如何查看依赖调用关系？](https://www.cnblogs.com/rever/p/10978703.html)
+[sourceMap是个啥？](https://segmentfault.com/a/1190000020213957)
+
+##### webpack中loader（打包方案）
+
+因此，loader是一个打包方案，能对特定类型的文件用相应的方案进行打包。
+[Webpack教程四：Loader](https://blog.csdn.net/qq_35732147/article/details/90286681)
+[webpack学习笔记—优化缓存、合并、懒加载等](https://www.cnblogs.com/yangmin01/p/6290595.html)
+
+##### assetsPublicPath
+assetsPublicPath: 'http://127.0.0.1:8000/'
+
+```
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
+
+extract-text-webpack-plugin
+
+new ExtractTextPlugin({
+  filename: utils.assetsPath('css/[name].min.css')
+}),
+```
+
+  
 
 
 
+
+  
 
 
 
