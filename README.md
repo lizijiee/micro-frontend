@@ -106,6 +106,11 @@ anifest
 [Vue-Cli项目如何查看依赖调用关系？](https://www.cnblogs.com/rever/p/10978703.html)
 [sourceMap是个啥？](https://segmentfault.com/a/1190000020213957)
 
+##### webpack build后生成的app、vendor、manifest三者有何职能不同？
+
+> [webpack build后生成的app、vendor、manifest三者有何职能不同？](https://www.jianshu.com/p/7a888571522d)
+>
+
 ##### webpack中loader（打包方案）
 
 因此，loader是一个打包方案，能对特定类型的文件用相应的方案进行打包。
@@ -113,7 +118,10 @@ anifest
 [webpack学习笔记—优化缓存、合并、懒加载等](https://www.cnblogs.com/yangmin01/p/6290595.html)
 
 ##### assetsPublicPath
-assetsPublicPath: 'http://127.0.0.1:8000/'
+==打包上线容易遇到的路径引用问题:==
+首先检查请求是否合法：请求内容是什么，是请求错误还是代码错误。	
+assetsPublicPath: 'http://127.0.0.1:8000/' 
+[解决 vue-cli index.js dev 配置中 assetsPublicPath 的值不能填 "./" 的问题](https://blog.csdn.net/isyoungboy/article/details/84350256)
 
 ```
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -124,6 +132,36 @@ new ExtractTextPlugin({
   filename: utils.assetsPath('css/[name].min.css')
 }),
 ```
+
+  singleSpa.registerApplication注册仅执行一次，再次运行是取之前js文件
+
+```javascript
+js文件先于dom元素加载；
+vendor.js:19 	TypeError: Cannot convert undefined or null to object
+```
+
+> [webpack + vue 项目 自定义 插件 解决 前端 JS 版本 更新 问题](https://www.cnblogs.com/phpdragon/p/7300736.html)
+> Webpack 是一个前端资源加载/打包工具。它将根据模块的依赖关系进行静态分析，然后将这些模块按照指定的规则生成对应的静态资源。
+> 它的异步加载原理是，事先将编译好后的静态文件，通过js对象映射，硬编码进打包后的 manifest.xxxx.js 文件中，然后通过JSONP原理按需加载每个chunk。
+
+
+
+> [详解CommonsChunkPlugin的配置和用法](https://segmentfault.com/a/1190000012828879)
+
+
+
+> [webpack基础--代码分割和懒加载](https://blog.csdn.net/rainbow8590/article/details/81027696)
+
+> [彻底解决Webpack打包性能问题](https://zhuanlan.zhihu.com/p/21748318)
+
+> [微前端改造初探](https://segmentfault.com/a/1190000019718750?utm_source=tag-newest)
+
+> 
+
+> 
+
+​    ![这里写图片描述](https://img-blog.csdn.net/20180713104632583?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3JhaW5ib3c4NTkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
 
   
 
