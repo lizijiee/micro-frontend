@@ -156,14 +156,27 @@ vendor.js:19 	TypeError: Cannot convert undefined or null to object
 
 > [微前端改造初探](https://segmentfault.com/a/1190000019718750?utm_source=tag-newest)
 
-> 
+> [微前端详细实施原理](https://alili.tech/tags/%E5%BE%AE%E5%89%8D%E7%AB%AF/)
 
-> 
+> [Web Components 入门实例教程](http://www.ruanyifeng.com/blog/2019/08/web_components.html)
 
-​    ![这里写图片描述](https://img-blog.csdn.net/20180713104632583?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3JhaW5ib3c4NTkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+>  [ant design pro 如何使用 qiankun 做微前端（上）](https://zhuanlan.zhihu.com/p/93198281)
+
+>  ==React项目中runtime-main.js也需要引入到项目中==
+
+```
+ React项目中runtime-main.js也需要引入到项目中
+ await runScript('http://127.0.0.1:8888/static/js/runtime-main.js');
+ await runScript('http://127.0.0.1:8888/static/js/2.chunk.js');
+ await runScript('http://127.0.0.1:8888/static/js/main.chunk.js');
+```
 
 
-  
+
+![这里写图片描述](https://img-blog.csdn.net/20180713104632583?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3JhaW5ib3c4NTkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+
+
 
 
 
