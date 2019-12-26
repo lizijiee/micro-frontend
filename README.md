@@ -118,10 +118,17 @@ anifest
 [webpack学习笔记—优化缓存、合并、懒加载等](https://www.cnblogs.com/yangmin01/p/6290595.html)
 
 ##### assetsPublicPath
+==publicPath属性==
+
+> webpack会在静态文件路径前面添加publicPath的值，当我们把资源放到CDN上的时候，把publicPath的值设为CDN的值就可以了。
+
+
+
 ==打包上线容易遇到的路径引用问题:==
-首先检查请求是否合法：请求内容是什么，是请求错误还是代码错误。	
-assetsPublicPath: 'http://127.0.0.1:8000/' 
-[解决 vue-cli index.js dev 配置中 assetsPublicPath 的值不能填 "./" 的问题](https://blog.csdn.net/isyoungboy/article/details/84350256)
+
+> 首先检查请求是否合法：请求内容是什么，是请求错误还是代码错误。	
+> assetsPublicPath: 'http://127.0.0.1:8000/' 
+> [解决 vue-cli index.js dev 配置中 assetsPublicPath 的值不能填 "./" 的问题](https://blog.csdn.net/isyoungboy/article/details/84350256)
 
 ```
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -177,13 +184,11 @@ vendor.js:19 	TypeError: Cannot convert undefined or null to object
 
 
 
+> [深入剖析Vue源码 - 完整挂载流程和模板编译](https://juejin.im/post/5ccafd4d51882540d472a90e)
 
+> [Single-Spa + Vue Cli 微前端落地指南 (项目隔离远程加载，自动引入)](https://juejin.im/post/5dfd8a0c6fb9a0165f490004)
 
-
-
-  
-
-
+>[带你手写微前端框架](https://github.com/YataoZhang/my-single-spa/issues/4)
 
 
 
