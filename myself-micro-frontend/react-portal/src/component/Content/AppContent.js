@@ -1,38 +1,42 @@
 import React from "react";
-// 引入Redux
+// 开始Redux引入
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as actionCreators from "@/redux/actions/actions.js";
+// 结束Redux引入
 
-// 引入redux
+// 连接 React 组件与 Redux store
 @connect(
-  // 将store中collapsed值赋值到组件中变量collapsed
+  // 将store中routes值赋值到组件中变量routes
   state => {
     return {
       routes: state.routes
     };
   },
+  // 将action和dispatch组合起来生成mapDispatchToProps需要生成的内容。
   dispatch => bindActionCreators(actionCreators, dispatch)
 )
-class NoMatch extends React.Component {
+class AppContent extends React.Component {
   constructor(props) {
     super(props);
   }
+
   componentDidMount() {
-    const { id } = this.props.match.params; //路由参数
+    const { id } = this.props.match.params; // 路由参数（应用索引）
     const index = Number(id);
     if (isNaN(index)) {
       // 作页面查找不到404处理
     } else {
+      // 跳转页面
       this.props.requestRoutes(index).then(url => {
         window.location.href = `http://localhost:3000${url}`;
       });
     }
   }
+
   render() {
-    // 如果不存在app
     return null;
   }
 }
 
-export default NoMatch;
+export default AppContent;

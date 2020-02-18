@@ -1,33 +1,36 @@
 import React from "react";
 import { Link, BrowserRouter as Router } from "react-router-dom";
-// 引入Redux
+// 开始Redux引入
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as actionCreators from "@/redux/actions/actions.js";
+// 结束Redux引入
 
 import { Layout, Menu, Icon } from "antd";
 const { Sider } = Layout;
 
-// 引入redux
+// 连接 React 组件与 Redux store
 @connect(
-  // 将store中collapsed值赋值到组件中变量collapsed
+  // 将store中collapsed/routes值赋值到组件中变量collapsed/routes
   state => {
     return {
       collapsed: state.collapsed,
       routes: state.routes
     };
   },
+  // 将action和dispatch组合起来生成mapDispatchToProps需要生成的内容。
   dispatch => bindActionCreators(actionCreators, dispatch)
 )
+
 class LeftSider extends React.Component {
   state = {
-    data: []
+    data: [] // 菜单树数据
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const data = JSON.parse(localStorage.getItem("routes"));
-    const { routes } = nextProps;
-    // 当传入的routes发生变化的时候，更新state
+    const data = JSON.parse(localStorage.getItem("routes")); // 浏览器缓存菜单树数据
+    const { routes } = nextProps; 
+    // 当传入的data发生变化的时候，更新state
     if (routes !== prevState.data) {
       return {
         data: !!data ? data : routes
@@ -38,7 +41,7 @@ class LeftSider extends React.Component {
   }
 
   render() {
-    const { collapsed } = this.props;
+    const { collapsed } = this.props;// 左侧导航栏折叠状态
     return (
       <Router>
         <Sider trigger={null} collapsible collapsed={collapsed}>

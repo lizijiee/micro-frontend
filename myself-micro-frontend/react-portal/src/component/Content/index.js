@@ -1,19 +1,15 @@
 import React from "react";
-import { Route, HashRouter, Switch, Redirect } from "react-router-dom"; // 引入Route
-import Loadable from "react-loadable";
-import ReactComponent from "./React.jsx";
-import Angular from "./Angular.jsx";
-import Vue from "./Vue.jsx";
-import NoMatch from "./NoMatch.jsx";
-// 引入Redux
+import { Route, HashRouter, Switch, Redirect } from "react-router-dom";
+import AppContent from "./AppContent";
+// 开始Redux引入
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as actionCreators from "@/redux/actions/actions.js";
-
-import { Layout, Menu, Icon } from "antd";
+import * as actionCreators from "@/redux/actions/actions";
+// 结束Redux引入
+import { Layout, Icon } from "antd";
 const { Content, Header } = Layout;
 
-// 引入redux
+// 连接 React 组件与 Redux store
 @connect(
   // 将store中collapsed值赋值到组件中变量collapsed
   state => {
@@ -21,14 +17,17 @@ const { Content, Header } = Layout;
       collapsed: state.collapsed
     };
   },
+  // 将action和dispatch组合起来生成mapDispatchToProps需要生成的内容。
   dispatch => bindActionCreators(actionCreators, dispatch)
 )
+
+
 class Sider extends React.Component {
   render() {
-    const { collapsed, toggle } = this.props;
+    const { collapsed, toggle } = this.props; // 菜单折叠参数及函数
     return (
       <Layout>
-        {/* 右侧顶部导航栏 */}
+        {/* 右侧顶部导航栏开始 */}
         <Header
           style={{
             background: "#fff",
@@ -41,7 +40,9 @@ class Sider extends React.Component {
             onClick={() => toggle(collapsed)}
           />
         </Header>
-        {/* 右侧底部内容页 */}
+        {/* 右侧顶部导航栏结束 */}
+
+        {/* 右侧底部内容页开始 */}
         <Content
           style={{
             // margin: "15px 15px",
@@ -52,23 +53,25 @@ class Sider extends React.Component {
         >
           <HashRouter>
             <Switch>
-              {/* <Route exact path="/" component={NoMatch} /> */}
-              <Route exact path="/"></Route>
-              <Route exact path="/app/:id" component={NoMatch} />
-              {/* <Route exact path="/react" component={ReactComponent} /> */}
+              <Route exact path="/" />
+              <Route exact path="/app/:id" component={AppContent} />
+              <Redirect to="/" />
               {/* <Route exact path="/angular" component={Angular} /> */}
               {/* <Route exact path="/vue" component={Vue} /> */}
-              {/* <Route path="*" component={NoMatch} /> */} <Redirect to="/" />
             </Switch>
           </HashRouter>
           <div>
-            <div id="angular-app"> </div>
+            {/* 子项目切换不同框架挂载DOM节点 */}
             <div id="single-vue">
               <div id="app"> </div>
             </div>
-            <div id="react-app"> </div>
+            {/*
+             <div id="react-app"> </div>
+             <div id="angular-app"> </div>
+            */}
           </div>
         </Content>
+        {/* 右侧底部内容页结束 */}
       </Layout>
     );
   }

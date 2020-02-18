@@ -15,19 +15,14 @@ const runScript = async (url) => {
         firstScript.parentNode.insertBefore(script, firstScript);
     });
 };
-/**
- * runScript 一个promise同步方法。可以代替创建一个script标签，然后加载服务
- * @param  {string}     url                 请求文件地址
- * @param  {array}      routes              路由列表
- * @param  {object}     extraProps  = {} （初始值）   extra的属性
- */
+
 // 注册微前端服务
 singleSpa.registerApplication(
     'singleDemo',
     async () => {
             /* 
-                注册用函数，
-                return 一个singleSpa 模块对象，模块对象来自于要加载的js导出
+                注册所用函数;
+                return 一个模块对象（singleSpa），模块对象来自于要加载的js导出（子项目）;
                 如果这个函数不需要在线引入，只需要本地引入一块加载：
                 () => import('xxx/main.js')
             */
@@ -37,7 +32,7 @@ singleSpa.registerApplication(
             await runScript(' http://11.11.78.240:9094/static/manifest.js');
             await runScript(' http://11.11.78.240:9094/static/vendor.js');
             await runScript(' http://11.11.78.240:9094/static/app.js');
-
+            // 引入后样式设置
             document.getElementById('single-vue').style.backgroundColor = '#161616';
             document.getElementById('single-vue').style.width = '1263px';
             document.getElementById('single-vue').style.display = 'inline-block';
@@ -46,8 +41,11 @@ singleSpa.registerApplication(
         location => location.pathname.startsWith('/vue') // 配置微前端模块前缀
 );
 
+singleSpa.start(); // 启动
+
+
 /*
-    react应用实例
+    react 应用实例
  singleSpa.registerApplication(
     'reactApp',
     async () => {
@@ -57,7 +55,8 @@ singleSpa.registerApplication(
         location => location.pathname.startsWith('/react')
 ); 
 */
-
+/* 
+    angular 应用实例 
 singleSpa.registerApplication(
     'angular-app',
     async () => {
@@ -70,5 +69,4 @@ singleSpa.registerApplication(
         },
         location => location.pathname.startsWith('/angular')
 );
-
-singleSpa.start(); // 启动
+ */
