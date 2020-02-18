@@ -1,11 +1,5 @@
-import * as types from '../constants/actionTypes'; // 导入行为标识
-import { listID as list } from './list'; // 路由索引
-/*
- import {
-  getToken,
-  getNoticeData
-} from "@/utils/api.js"; // 导入我们的api接口 
-*/
+import * as types from '../constants/actionTypes'; // redux行为标识
+import list from './list'; // 路由索引
 
 // 存储菜单折叠状态
 export const setStatus = data => ({
@@ -24,9 +18,9 @@ export const setRoutes = data => ({
   data
 });
 
-// 获取路由+菜单数据
+// 生成新菜单数据
 export const requestRoutes = val => dispatch => {
-  // 默认全部路由
+  // 默认菜单全部信息
   const defaultRoutes = [{
       id: 1,
       icon: "environment",
@@ -175,21 +169,9 @@ export const requestRoutes = val => dispatch => {
     return defaultRoutes[i - 1]
   })
 
-  // window.location.href = `http://localhost:3000${routes[0].path}`;
   return new Promise(function (resolve, reject) {
     localStorage.setItem('routes', JSON.stringify(routes))
     dispatch(setRoutes(routes));
     resolve(routes[0].path);
   });
 };
-
-/* 
-// 获取Token
-export const requestToken = val => dispatch => {
-  return getToken(val).then(res => {
-    dispatch(setToken(res.data.access_token));
-    // return res.status === 200 ? Promise.resolve(res) : Promise.reject(res)
-    return Promise.resolve(res)
-  });
-};
-*/

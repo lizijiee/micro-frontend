@@ -1,31 +1,5 @@
-/*
-  随机数字思路： 
- 1. 确认此次数组项数;   => obj
- 2. 项数作为循环次数,再次1-23范围随机生成数字;   => 内部for循环
- 3. 将随机数字生成新数组，并去重;     =>target 
- */
-
-/* 
-// mock 数据生成函数
-let target = [];
-for (let i = 0; i < 100; i++) {
-    // 路由菜单为23项
-    let obj = Mock.mock({
-        "number|1-23": 1
-    });
-    let arr = [];
-    for (let n = 0; n <= obj.number; n++) {
-        arr.push(Mock.mock({
-            "number|1-23": 1
-        }).number)
-    }
-    target.push([...new Set(arr)])
-}
-// 目标数据；
-console.log(target);
-*/
-// 默认All路由索引,用于生成新路由;
-const listID = [
+// 新菜单索引：从初始全部菜单选择对应项生成新菜单;
+export default listID = [
     [1, 3],
     [4, 5, 6],
     [16, 7, 2, 21, 14, 12, 9, 5, 15, 17, 18, 11],
@@ -128,7 +102,32 @@ const listID = [
     [17, 16, 8, 2, 18, 11, 3],
     [3, 10, 18, 4, 2, 19, 6, 14, 13, 12, 17],
     [17, 22, 3, 19, 16, 2, 12, 14, 7, 13, 15, 11]
-]
-export {
-    listID
-};
+] 
+
+
+/*
+  随机数字思路： 
+ 1. 确认此次数组项数;   => obj
+ 2. 项数作为循环次数,再次1-23范围随机生成数字;   => 内部for循环
+ 3. 将随机数字生成新数组，并去重;     =>target 
+ */
+
+/* 
+// mock 数据生成函数
+let target = [];
+for (let i = 0; i < 100; i++) {
+    // 路由菜单为23项
+    let obj = Mock.mock({
+        "number|1-23": 1
+    });
+    let arr = [];
+    for (let n = 0; n <= obj.number; n++) {
+        arr.push(Mock.mock({
+            "number|1-23": 1
+        }).number)
+    }
+    target.push([...new Set(arr)])
+}
+// 目标数据；
+console.log(target);
+*/
