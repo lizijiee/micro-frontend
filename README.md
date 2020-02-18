@@ -73,6 +73,9 @@ iframe嵌入方式比较容易实现，不再赘述。
 
 > 其中有的问题比较好解决(问题1)，有的问题我们可以睁一只眼闭一只眼(问题4)，但有的问题我们则很难解决(问题3)甚至无法解决(问题2)，而这些无法解决的问题恰恰又会给产品带来非常严重的体验问题， 最终导致我们舍弃了 iframe 方案。
 
+> 参考文章：
+> [Why Not Iframe](https://www.yuque.com/kuitos/gky7yw/gesexv)
+
 ## <a id="what"><font color="black">5. single-spa</font></a>
 
 >  [single-spa官网](https://single-spa.js.org/)

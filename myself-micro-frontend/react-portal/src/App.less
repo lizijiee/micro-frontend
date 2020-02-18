@@ -1,28 +1,29 @@
-.common-basic-bar {
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .08);
-    border-bottom: 1px solid #e9e9e9;
-    background: #ea9d13;
-    line-height: 50px;
-    font-size: 0;
-    position: fixed;
-    width: 100%;
+// 左侧logo部分
+.ant-layout-sider-children .logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+}
 
-    .common-all-nav {
-        background: #ea9d13;
-        width: 50px;
-        height: 50px;
-        float: left;
-        margin: 0;
-        text-align: center;
-        font-size: 14px;
+.ant-layout-header {
+    background-color: red;
+    height: 60px !important;
 
-        img {
-            width: 18px;
-            margin: 0 auto;
-            vertical-align: middle;
-            line-height: 50px;
-            height: 14px;
-        }
+}
 
-    }
+.ant-layout-header .trigger {
+    font-size: 18px;
+    line-height: 60px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+#ant-layout-header .trigger:hover {
+    color: #1890ff;
+}
+
+// 超出部分显示滚动条
+.ant-layout-content {
+    overflow: auto;
 }
