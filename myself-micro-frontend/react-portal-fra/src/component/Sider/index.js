@@ -8,7 +8,6 @@ import * as actionCreators from "@/redux/actions/actions.js";
 
 import { Layout, Menu, Icon } from "antd";
 const { Sider } = Layout;
-
 // 连接 React 组件与 Redux store
 @connect(
   // 将store中collapsed/routes值赋值到组件中变量collapsed/routes
