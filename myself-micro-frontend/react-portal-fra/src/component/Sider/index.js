@@ -22,9 +22,13 @@ const { Sider } = Layout;
 )
 
 class LeftSider extends React.Component {
-  state = {
-    data: [] // 菜单树数据
-  };
+  constructor(){
+    super()
+    this.state = {
+      data: [], // 菜单树数据
+      id:[]   // 菜单默认选中项id
+    };
+  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const data = JSON.parse(localStorage.getItem("routes")); // 浏览器缓存菜单树数据
@@ -32,12 +36,14 @@ class LeftSider extends React.Component {
     // 当传入的data发生变化的时候，更新state
     if (routes !== prevState.data) {
       return {
-        data: !!data ? data : routes
+        data: !!data ? data : routes,
+        id: !!data ? [`${data[0].id}`] : [],
       };
     }
     // 对于state不进行任何操作
     return null;
   }
+
 
   render() {
     const { collapsed } = this.props;// 左侧导航栏折叠状态
@@ -48,7 +54,7 @@ class LeftSider extends React.Component {
           <Menu
             theme="dark"
             onClick={this.handleClick}
-            defaultSelectedKeys={[`${this.state.data[0].id}`]}
+            defaultSelectedKeys={this.state.id}
             defaultOpenKeys={["sub1"]}
             mode="inline"
           >

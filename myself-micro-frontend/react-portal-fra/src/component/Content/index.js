@@ -21,11 +21,20 @@ const { Content, Header } = Layout;
   dispatch => bindActionCreators(actionCreators, dispatch)
 )
 
-
 class Sider extends React.Component {
+  constructor(){
+      super()
+      this.state={
+          url:''  // 首个展示地址
+      }
+  }
+  componentDidMount(){
+     this.setState({
+       url:JSON.parse(localStorage.getItem('routes'))[0].path.substring(6)
+     })
+  }
   render() {
     const { collapsed, toggle } = this.props; // 菜单折叠参数及函数
-    const url=JSON.parse(localStorage.getItem('routes'))[0].path.substring(6) // 首个展示地址
     return (
       <Layout>
         {/* 右侧顶部导航栏开始 */}
@@ -54,10 +63,16 @@ class Sider extends React.Component {
         >
           <HashRouter>
             <Switch>
-              <Route exact path="/" />
-              <Route exact path="/app/:id" component={AppContent} />
+              {/* <Route exact path="/" /> */}
+              <Route exact path="/prod/ind/:id" component={AppContent} /> 
+              <Route exact path="/prod/cloud/:id" component={AppContent} />
+              <Route exact path="/manager/ind/:id" component={AppContent} />
+              <Route exact path="/manager/cloud/:id" component={AppContent} />
+              <Route exact path="/service/ind/:id" component={AppContent} />
+              <Route exact path="/service/cloud/:id" component={AppContent} />
+
               {/* 重定向至菜单导航栏第一个path */}
-              <Redirect to={url} /> 
+              <Redirect to={this.state.url} /> 
               {/* <Route exact path="/angular" component={Angular} /> */}
               {/* <Route exact path="/vue" component={Vue} /> */}
             </Switch>

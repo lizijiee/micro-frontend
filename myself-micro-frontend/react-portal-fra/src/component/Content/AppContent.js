@@ -1,7 +1,7 @@
 import React from "react";
 // 开始Redux引入
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 import * as actionCreators from "@/redux/actions/actions.js";
 // 结束Redux引入
 
@@ -22,13 +22,18 @@ class AppContent extends React.Component {
   }
 
   componentDidMount() {
-    const { id } = this.props.match.params; // 路由参数（应用索引）
-    const index = Number(id);
+    const {
+      path,
+      params: {
+        id
+      }
+    } = this.props.match; // 路由参数（应用索引）
+    const index = parseInt(id);
     if (isNaN(index)) {
       // 作页面查找不到404处理
     } else {
       // 跳转页面
-      this.props.requestRoutes(index).then(url => {
+      this.props.requestRoutes(index, path).then(url => {
         window.location.href = `http://localhost:3000${url}`;
       });
     }
