@@ -84,18 +84,6 @@ iframe嵌入方式比较容易实现，不再赘述。
 > 首先对微前端路由进行注册，使用single-spa充当微前端加载器，并作为项目单一入口来接受所有页面URL的访问，根据页面URL与微前端的匹配关系，选择加载对应的微前端模块，再由该微前端模块进行路由响应URL，即微前端模块中路由找到相应的组件，渲染页面内容。
 >
 
-
-
-
-
-
-
-
-
-
-
-
-
 > 参考文章：
 > [single-spa官网](https://single-spa.js.org/)
 
@@ -103,7 +91,7 @@ iframe嵌入方式比较容易实现，不再赘述。
 
 ### 3. 微前端实现过程
 
-#### 3.1 基座项目
+#### 3.1 基座项目（父项目改造）
 
 > 基座项目创建：
 
@@ -118,11 +106,29 @@ yarn add antd
 yarn create react-app portal
 ```
 
+```javascript
+import * as singleSpa from 'single-spa';
+
+singleSpa.registerApplication(
+    'react',
+    () => import('./main.js'),
+    (location) => location.pathname.startsWith('/react'), {
+        some: 'value'
+    }
+);
+
+singleSpa.start();
+```
 
 
 
 
 
+#### 3.2 微前端项目（子项目改造）
+
+> npm install -g @vue/cli
+>
+> 
 
 #### JS文件自动加载
 
@@ -255,10 +261,11 @@ JS沙箱
 - [微前端入门  —— 餐饮项目](https://juejin.im/post/5d8adb8ff265da5ba12cd173#heading-0)
 - [微前端 single-spa —— 内附项目](https://juejin.im/post/5d3925615188257f3850de5a)
 - [全栈增长工程师](https://segmentfault.com/blog/phodal?page=1)
-- [实施微前端的六种方式](https://segmentfault.com/a/1190000015566927)
 - [微前端 —— 理论篇（实际项目参考文章）](https://segmentfault.com/a/1190000019957130)
 - [microfront-end-single-spa](https://github.com/justwiner/microfront-end-single-spa)
 - [命令行服务器（http-server)和跨域](https://blog.csdn.net/weixin_43310551/article/details/86304618)
+- [Single-Spa + Vue Cli 微前端落地指南 (项目隔离远程加载，自动引入)](https://juejin.im/post/5dfd8a0c6fb9a0165f490004#heading-9)
+- [可能是你见过最完善的微前端解决方案](https://zhuanlan.zhihu.com/p/78362028)
 
 
 ## <a id="title10"><font color="black">参考代码</font></a>

@@ -1,12 +1,9 @@
 import React, { useState } from 'react'
-import { Layout, Menu } from 'antd';
-import { HashRouter as Router, Link, Switch, Route, useParams } from 'react-router-dom'
+import { Layout } from 'antd';
+import { Link } from 'react-router-dom'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
 } from '@ant-design/icons';
 import './App.less';
 
@@ -29,9 +26,6 @@ function App() {
               <Link to="/angular">Angular</Link>
             </li>
           </ul>
-          <Switch>
-            <Route path="/:id" children={<Child />} />
-          </Switch>
         </Sider>
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }}>
@@ -48,24 +42,11 @@ function App() {
               minHeight: 280,
             }}
           >
-            Content
+            <div id="vue" />
           </Content>
         </Layout>
       </Layout>
     </div>
   );
 }
-
-function Child() {
-  // We can use the `useParams` hook here to access
-  // the dynamic pieces of the URL.
-  let { id } = useParams();
-
-  return (
-    <div>
-      <h3>ID: {id}</h3>
-    </div>
-  );
-}
-
 export default App;

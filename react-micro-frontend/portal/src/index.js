@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { HashRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
+import "./singleSpa.js"; // 引入微前端配置文件;
 
 import * as serviceWorker from './serviceWorker';
 

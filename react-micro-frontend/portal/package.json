@@ -16,7 +16,8 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
-    "single-spa": "^5.4.0"
+    "single-spa": "^5.4.0",
+    "systemjs": "^6.3.1"
   },
   "scripts": {
     "start": "react-app-rewired start",
