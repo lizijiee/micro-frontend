@@ -122,10 +122,10 @@ singleSpa.start();
 
 > registerApplication参数含义：
 >
-> 应用名称：
+> 一、应用名称：
 > 第一个参数是一个字符串名称。
 >
-> 加载函数或者应用：
+> 二、加载函数或者应用：
 > 第二个参数是一个返回promise加载函数或者已解析的应用。
 >
 > 1. 应用作为参数，该参数由一个带有生命周期的对象组成。
@@ -140,6 +140,9 @@ singleSpa.start();
 > ```
 >
 > 2. 加载函数作为参数必须返回一个promise或者异步函数，第一次加载应用程序时，将不带任何参数地调用该函数，返回promise必须和应用一起解决。最常见的加载函数导入方式是：`() => import('/path/to/application.js')`
+>
+> 三、动态函数（activity function）
+> 第三个参数必须是一个纯函数，函数将window.location作为第一个参数提供，并在应用程序处于活动状态时返回一个判断结果。常见使用时，通过动态函数（activity function）第一个参数判断子应用是否处于激活状态。
 
 
 
@@ -255,7 +258,39 @@ vendor.js:19 	TypeError: Cannot convert undefined or null to object
 ![image-20200415212256372](C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200415212256372.png)
 
 CSS沙箱CSS modules 
+CSS处理用到postcss-loader，postcss-loader用到postcss，我们添加postcss的处理插件，为每一个CSS选择器都添加名为`.namespace-kaoqin`的根选择器，最后打包出来的CSS，如下所示：
+
 JS沙箱
+
+然后配置 nginx
+
+```javascript
+server {
+    listen 8080;
+    server_name localhost;
+
+    root /usr/share/nginx/html;
+    index index.html;
+    ssi on;
+
+    # 将 / 重定向到 /browse
+    rewrite ^/$ http://localhost:8080/browse redirect;
+
+    # 根据路径访问 html 
+    location /browse {
+      set $PAGE 'browse';
+    }
+    location /order {
+      set $PAGE 'order';
+    }
+    location /profile {
+      set $PAGE 'profile'
+    }
+
+    # 所有其他路径都渲染 /index.html
+    error_page 404 /index.html;
+}
+```
 
 
 
@@ -279,38 +314,39 @@ JS沙箱
 
 
 
-> [深入剖析Vue源码 - 完整挂载流程和模板编译](https://juejin.im/post/5ccafd4d51882540d472a90e)
-
-> [Single-Spa + Vue Cli 微前端落地指南 (项目隔离远程加载，自动引入)](https://juejin.im/post/5dfd8a0c6fb9a0165f490004)
-
->[带你手写微前端框架](https://github.com/YataoZhang/my-single-spa/issues/4)
-
 
 
 ## <a id="title9"><font color="black">参考文章</font></a>
 
-- [single-spa官网](https://single-spa.js.org/)
-- [微前端实践](https://juejin.im/post/5cadd7835188251b2f3a4bb0)
-- [用微前端的方式搭建类单页应用](https://www.cnblogs.com/meituantech/p/9604591.html)（以美团为例）
-- [前端单页应用微服务化解决方案2 - Single-SPA](https://juejin.im/post/5ba057695188255c953821c6)
-- [稍复杂例子single-spa-examples](https://github.com/CanopyTax/single-spa-examples.git)
-- [微前端 single-spa（独立部署内附代码）](https://juejin.im/post/5d3925615188257f3850de5a)
-- [微前端 —— 理论篇](https://segmentfault.com/a/1190000019957130)
-- [微前端入门  —— 餐饮项目](https://juejin.im/post/5d8adb8ff265da5ba12cd173#heading-0)
-- [微前端 single-spa —— 内附项目](https://juejin.im/post/5d3925615188257f3850de5a)
-- [全栈增长工程师](https://segmentfault.com/blog/phodal?page=1)
-- [微前端 —— 理论篇（实际项目参考文章）](https://segmentfault.com/a/1190000019957130)
-- [microfront-end-single-spa](https://github.com/justwiner/microfront-end-single-spa)
+- [微前端实践 ](https://juejin.im/post/5cadd7835188251b2f3a4bb0)
+
+- [微前端 —— portal项目](https://segmentfault.com/a/1190000019957130)
+
+- [全栈增长工程师](https://segmentfault.com/blog/phodal?page=1)(微前端如何落地？详细原理)
+
 - [命令行服务器（http-server)和跨域](https://blog.csdn.net/weixin_43310551/article/details/86304618)
+
 - [Single-Spa + Vue Cli 微前端落地指南 (项目隔离远程加载，自动引入)](https://juejin.im/post/5dfd8a0c6fb9a0165f490004#heading-9)
+
 - [可能是你见过最完善的微前端解决方案](https://zhuanlan.zhihu.com/p/78362028)
+
+- [前端分享会--微前端改造初探](https://www.jianshu.com/p/81350e1068b6)
+
+- [带你手写微前端框架](https://github.com/YataoZhang/my-single-spa/issues/4)
+
+- [深入剖析Vue源码 - 完整挂载流程和模板编译](https://juejin.im/post/5ccafd4d51882540d472a90e)
+
+  
+
+- 
 
 
 ## <a id="title10"><font color="black">参考代码</font></a>
 
 - [乾坤](https://github.com/umijs/qiankun)
-- [微前端模块加载器](https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2FFantasy9527%2Flotus-scaffold-micro-frontend-portal)
-- [微前端Base App示例源码](https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2FFantasy9527%2Fmicrofrontend-base-demo)
-- [微前端子项目示例源码](https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2FFantasy9527%2Fmicrofrontend-submodule-demo)
-- [Single-SPA微前端框架的使用Demo汇总](https://alili.tech/archive/22975f44/)
-- [migrating-to-single-spa-react-starter源自官网](https://github.com/alocke12992/migrating-to-single-spa-react-starter)
+
+- [migrating-to-single-spa-react-starter餐车栗子from官网](https://github.com/alocke12992/migrating-to-single-spa-react-starter)
+
+- [microfront-end-single-spa](https://github.com/justwiner/microfront-end-single-spa)
+
+  
