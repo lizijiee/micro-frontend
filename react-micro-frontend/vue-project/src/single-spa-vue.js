@@ -17,5 +17,4 @@ const vueLifecycles = singleSpaVue({
 export const bootstrap = vueLifecycles.bootstrap; // 启动时
 export const mount = vueLifecycles.mount; // 挂载时
 export const unmount = vueLifecycles.unmount; // 卸载时
-
 export default vueLifecycles;

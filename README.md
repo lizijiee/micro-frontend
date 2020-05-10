@@ -120,15 +120,53 @@ singleSpa.registerApplication(
 singleSpa.start();
 ```
 
-
+> registerApplication参数含义：
+>
+> 应用名称：
+> 第一个参数是一个字符串名称。
+>
+> 加载函数或者应用：
+> 第二个参数是一个返回promise加载函数或者已解析的应用。
+>
+> 1. 应用作为参数，该参数由一个带有生命周期的对象组成。
+>
+> ```js
+> const application = {
+>   bootstrap: () => Promise.resolve(), //bootstrap function
+>   mount: () => Promise.resolve(), //mount function
+>   unmount: () => Promise.resolve(), //unmount function
+> }
+> registerApplication('applicatonName', application, activityFunction)
+> ```
+>
+> 2. 加载函数作为参数必须返回一个promise或者异步函数，第一次加载应用程序时，将不带任何参数地调用该函数，返回promise必须和应用一起解决。最常见的加载函数导入方式是：`() => import('/path/to/application.js')`
 
 
 
 #### 3.2 微前端项目（子项目改造）
 
+Vue子项目
+
 > npm install -g @vue/cli
+
+react子项目
+
+> yarn create react-app react
 >
 > 
+
+angular子项目
+
+> npm install @angular/cli@9.0.0 -g
+> ng new my-app
+> ng serve --open
+
+```javascript
+npm install -g @angular/cli
+//直接安装报错
+```
+
+[TypeError: Cannot read property 'flags' of undefined](https://stackoverflow.com/questions/49544854/typeerror-cannot-read-property-flags-of-undefined)
 
 #### JS文件自动加载
 
