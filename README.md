@@ -155,19 +155,46 @@ Vue子项目
 react子项目
 
 > yarn create react-app react
->
+>yarn add single-spa-react
+
+<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200511222559799.png" alt="image-20200511222559799" style="zoom:33%;" />
+
+<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512000252709.png" alt="image-20200512000252709" style="zoom:33%;" />
+
+<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512000311275.png" alt="image-20200512000311275" style="zoom:33%;" />
+
+图片地址：	http://localhost:3000/static/media/logo.5d5d9eef.svg<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512000423411.png" alt="image-20200512000423411" style="zoom:33%;" />
+
+<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512001420941.png" alt="image-20200512001420941" style="zoom:33%;" />
+
+
+
+
+
+
 
 angular子项目
 
 > npm install @angular/cli@9.0.0 -g
 > ng new my-app
 > ng serve --open
+> ng e2e
+> 准备工作：
+> npm i -D @angular-builders/custom-webpack
+> npm i -D @angular-builders/dev-server
 
 ```javascript
 npm install -g @angular/cli
 //直接安装报错
 
+
+
 ```
+
+> 参考项目地址：https://github.com/joeldenning/coexisting-angular-microfrontends
+> 参考官网地址：https://single-spa.js.org/docs/ecosystem-angular/#manual-installation
+> [APP_BASE_HREF](https://angular.io/api/common/APP_BASE_HREF)
+> [single-spa-angular](https://single-spa.js.org/docs/ecosystem-angular/#manual-installation)
 
 > [报错为：TypeError: Cannot read property 'flags' of undefined](https://stackoverflow.com/questions/49544854/typeerror-cannot-read-property-flags-of-undefined)
 

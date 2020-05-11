@@ -44,6 +44,8 @@ function App() {
           >
             <div id="vue" />
             <div id="react-app" />
+            <div id="angular-app" />
+            <app-root></app-root>
           </Content>
         </Layout>
       </Layout>

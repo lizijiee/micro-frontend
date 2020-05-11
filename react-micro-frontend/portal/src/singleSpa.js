@@ -26,8 +26,8 @@ singleSpa.registerApplication(
 singleSpa.registerApplication(
     'react',
     async () => {
-            await runScript('http://localhost:3001/js/chunk-vendors.js');
-            await runScript('http://localhost:3001/js/app.js');
+            await runScript('http://localhost:5000/static/js/bundle.js');
+            await runScript('http://localhost:5000/static/js/main.chunk.js');
             return window.singleReact
         },
         (location) => location.pathname.startsWith('/react')
@@ -35,11 +35,16 @@ singleSpa.registerApplication(
 
 singleSpa.registerApplication(
     'angular',
-    () => import('./main.js'),
-    // 纯函数根据参数查看是否处于活动状态
-    (location) => location.pathname.startsWith('/angular'), {
-        some: 'value'
-    }
+    async () => {
+            await runScript('http://localhost:4000/polyfills.js');
+            await runScript('http://localhost:4000/runtime.js');
+            await runScript('http://localhost:4000/styles.js');
+            await runScript('http://localhost:4000/vendor.js');
+            await runScript('http://localhost:4000/main.js');
+            return window.singleAngular
+        },
+        // 纯函数根据参数查看是否处于活动状态
+        (location) => location.pathname.startsWith('/angular'),
 );
 
 singleSpa.start();
