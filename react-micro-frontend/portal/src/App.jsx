@@ -43,6 +43,7 @@ function App() {
             }}
           >
             <div id="vue" />
+            <div id="react-app" />
           </Content>
         </Layout>
       </Layout>

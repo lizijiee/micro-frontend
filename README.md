@@ -156,7 +156,6 @@ react子项目
 
 > yarn create react-app react
 >
-> 
 
 angular子项目
 
@@ -167,15 +166,32 @@ angular子项目
 ```javascript
 npm install -g @angular/cli
 //直接安装报错
+
 ```
 
-[TypeError: Cannot read property 'flags' of undefined](https://stackoverflow.com/questions/49544854/typeerror-cannot-read-property-flags-of-undefined)
+> [报错为：TypeError: Cannot read property 'flags' of undefined](https://stackoverflow.com/questions/49544854/typeerror-cannot-read-property-flags-of-undefined)
 
-#### JS文件自动加载
 
-##### manifest.json生成   
 
-anifest
+#### 3.3 改造优化
+
+##### 3.3.1 JS文件自动加载
+
+manifest.json生成 生成方法；manifest
+
+##### 3.3.2 JS文件自动加载
+
+
+
+
+
+
+
+#### 
+
+#####   
+
+
 [Vue-Cli项目如何查看依赖调用关系？](https://www.cnblogs.com/rever/p/10978703.html)
 [sourceMap是个啥？](https://segmentfault.com/a/1190000020213957)
 
@@ -234,13 +250,9 @@ vendor.js:19 	TypeError: Cannot convert undefined or null to object
 
 > [彻底解决Webpack打包性能问题](https://zhuanlan.zhihu.com/p/21748318)
 
-> [微前端改造初探](https://segmentfault.com/a/1190000019718750?utm_source=tag-newest)
 
-> [微前端详细实施原理](https://alili.tech/tags/%E5%BE%AE%E5%89%8D%E7%AB%AF/)
 
-> [Web Components 入门实例教程](http://www.ruanyifeng.com/blog/2019/08/web_components.html)
-
->  [ant design pro 如何使用 qiankun 做微前端（上）](https://zhuanlan.zhihu.com/p/93198281)
+> [ant design pro 如何使用 qiankun 做微前端（上）](https://zhuanlan.zhihu.com/p/93198281)
 
 >  ==React项目中runtime-main.js也需要引入到项目中==
 
@@ -291,16 +303,6 @@ server {
     error_page 404 /index.html;
 }
 ```
-
-
-
-在toB的前端
-背景->排查->解决->防止，以解决某个事故为例来介绍。
-如何从何而来，为什么采用，采用的优点缺点是什么，具体实施过程，实施过程中遇到的bug，
-[(转)一位大牛对于写技术博客的一些建议](https://www.cnblogs.com/princepeng/p/11174085.html)
-[技术博客文章的写作思路总结](https://my.oschina.net/FEEDFACF/blog/1610191)
-
-
 
 
 
