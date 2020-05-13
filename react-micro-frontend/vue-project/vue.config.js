@@ -1,9 +1,9 @@
 module.exports = {
+    /* 
+        重点：
+        设置publicPath，避免父项目加载子项目时，部分资源文件路径为父项目地址，导致请求文件失败。
+    */
     publicPath: "//localhost:8080/",
-    // css在所有环境下，都不单独打包为文件。这样是为了保证最小引入（只引入js）
-    // css: {
-        // extract: false
-    // },
     configureWebpack: {
         devtool: 'none', // 不打包sourcemap
         output: {

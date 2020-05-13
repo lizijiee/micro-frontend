@@ -89,46 +89,157 @@ iframe嵌入方式比较容易实现，不再赘述。
 
 
 
-### 3. 微前端实现过程
+### 6. 微前端实现过程
 
-#### 3.1 基座项目（父项目改造）
+#### 6.1 基座项目（父项目改造）
 
 > 基座项目创建：
 
 ```javascript
 yarn create react-app portal
 yarn add antd
+// 创建config-overrides.js支持antd按需加载
+//    fixBabelImports('import', {
+//       libraryName: 'antd',
+//      libraryDirectory: 'es',
+//      style: true,
+//  }),
 ```
 
-> 基座项目创建：
+> 本文采用微前端加载原理是：
+> 首先在父项目创建dom节点，在项目注册过程输入待挂载的节点，即可完成子项目在父项目中运行。
+
+##### 6.2.1 创建路由及子项目挂载dom节点
+
+>
+> 代码如下：
 
 ```javascript
-yarn create react-app portal
+  <div className="App" >
+      <Layout>
+        <Sider trigger={null} collapsible collapsed={collapsed}>
+          <div className="logo" />
+          <ul >
+            <li key="react" >
+              <Link to="/react">React</Link>
+            </li>
+            <li key="vue" >
+              <Link to="/vue">Vue</Link>
+            </li>
+            <li key="angular" >
+              <Link to="/angular">Angular</Link>
+            </li>
+          </ul>
+        </Sider>
+        <Layout className="site-layout">
+          <Header className="site-layout-background" style={{ padding: 0 }}>
+            {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+              className: 'trigger',
+              onClick: () => { setCollapse(!collapsed) },
+            })}
+          </Header>
+          <Content
+            className="site-layout-background"
+            style={{
+              margin: '24px 16px',
+              padding: 24,
+              minHeight: 280,
+            }}
+          >
+            <div id="vue" />
+            <div id="react-app" />
+            <app-root></app-root>
+          </Content>
+        </Layout>
+      </Layout>
+    </div>
 ```
+
+
+
+##### 6.2.1 微前端应用注册
+
+> src文件中创建singleSpa.js文件。
+> 将文件引入项目入口文件index.js文件中。
+>
+> ```javascript
+> import React from 'react';
+> import ReactDOM from 'react-dom';
+> import './index.css';
+> import App from './App';
+> import { BrowserRouter as Router } from 'react-router-dom'
+> import "./singleSpa.js"; // 引入微前端配置文件;
+> ```
+
+```javascript
+// 项目目录结构
+├── public
+├── src
+│   ├── index.js
+│   ├── singleSpa.js
+│   └── App.jsx
+├── config-overrides.js
+├── package.json
+├── README.md
+├── yarn.lock
+```
+
+
+
+>
+> singleSpa.js部分代码：
 
 ```javascript
 import * as singleSpa from 'single-spa';
 
+// 注册应用方式参考文章：
+// Single-Spa + Vue Cli 微前端落地指南 (项目隔离远程加载，自动引入)(https://juejin.im/post/5dfd8a0c6fb9a0165f490004#heading-2)
+/**
+ * runScript 一个promise同步方法。可以代替创建一个script标签，然后加载服务
+ * @param  {string}         url         请求文件地址
+ */
+const runScript = async (url) => {
+    // 加载css同理
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = reject;
+        const firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+};
+
+// 注册微前端服务
+/* 
+    注册所用函数;
+    return 一个模块对象（singleSpa），模块对象来自于要加载的js导出（子项目）;
+    如果这个函数不需要在线引入，只需要本地引入一块加载：
+    () => import('xxx/main.js')
+*/
 singleSpa.registerApplication(
-    'react',
-    () => import('./main.js'),
-    (location) => location.pathname.startsWith('/react'), {
-        some: 'value'
-    }
+    'vue',
+    async () => {
+            await runScript('http://127.0.0.1:8080/js/chunk-vendors.js');
+            await runScript('http://127.0.0.1:8080/js/app.js');
+            return window.singleVue;
+        },
+        // 配置微前端模块前缀
+        // 纯函数根据参数查看是否处于活动状态
+        (location) => location.pathname.startsWith('/vue')
 );
 
-singleSpa.start();
+singleSpa.start(); // 启动注册,别忘记！
 ```
 
 > registerApplication参数含义：
 >
-> 一、应用名称：
-> 第一个参数是一个字符串名称。
+> 1. `appName: string`
+>    应用名称。
 >
-> 二、加载函数或者应用：
-> 第二个参数是一个返回promise加载函数或者已解析的应用。
->
-> 1. 应用作为参数，该参数由一个带有生命周期的对象组成。
+> 2. `applicationOrLoadingFn: () => <Function | Promise>`
+>    返回promise加载函数或者已解析的应用。
+>    1. 应用作为参数，该参数由一个带有生命周期的对象组成。
 >
 > ```js
 > const application = {
@@ -139,169 +250,444 @@ singleSpa.start();
 > registerApplication('applicatonName', application, activityFunction)
 > ```
 >
-> 2. 加载函数作为参数必须返回一个promise或者异步函数，第一次加载应用程序时，将不带任何参数地调用该函数，返回promise必须和应用一起解决。最常见的加载函数导入方式是：`() => import('/path/to/application.js')`
+> ​				2. 加载函数作为参数必须返回一个promise或者异步函数，第一次加载应用程序时，将不带任何参数地调用该函数，返回promise必须和应用一起解决。最常见的加载函数导入方式是：`() => import('/path/to/application.js')`
 >
-> 三、动态函数（activity function）
-> 第三个参数必须是一个纯函数，函数将window.location作为第一个参数提供，并在应用程序处于活动状态时返回一个判断结果。常见使用时，通过动态函数（activity function）第一个参数判断子应用是否处于激活状态。
+> 3. `activityFn: (location) => boolean`
+>    动态函数（activity function），必须是一个纯函数，函数将window.location作为第一个参数提供，并在应用程序处于活动状态时返回一个判断结果。常见使用时，通过动态函数（activity function）第一个参数判断子应用是否处于激活状态。
+>
+> 4. `customProps?: Object = {}`
+>
+>    将父项目参数传给子项目。
 
+#### 6.2 微前端项目（子项目改造）
 
+##### 6.2.1 Vue子项目改造
 
-#### 3.2 微前端项目（子项目改造）
-
-Vue子项目
-
-> npm install -g @vue/cli
-
-react子项目
-
-> yarn create react-app react
->yarn add single-spa-react
-
-<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200511222559799.png" alt="image-20200511222559799" style="zoom:33%;" />
-
-<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512000252709.png" alt="image-20200512000252709" style="zoom:33%;" />
-
-<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512000311275.png" alt="image-20200512000311275" style="zoom:33%;" />
-
-图片地址：	http://localhost:3000/static/media/logo.5d5d9eef.svg<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512000423411.png" alt="image-20200512000423411" style="zoom:33%;" />
-
-<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512001420941.png" alt="image-20200512001420941" style="zoom:33%;" />
-
-
-
-
-
-
-
-angular子项目
-
-> npm install @angular/cli@9.0.0 -g
-> ng new my-app
-> ng serve --open
-> ng e2e
-> 准备工作：
-> npm i -D @angular-builders/custom-webpack
-> npm i -D @angular-builders/dev-server
+> 环境准备：
 
 ```javascript
-npm install -g @angular/cli
-//直接安装报错
+npm install -g @vue/cli	//全局安装vue-cli
+vue create vue-project	// 创建子项目
 
-
-
+// 项目目录结构
+├── public
+├── src
+│   ├── main.js
+│   ├── assets
+│   ├── components
+│   └── App.vue
+├── vue.config.js
+├── package.json
+├── README.md
+└── yarn.lock
 ```
 
-> 参考项目地址：https://github.com/joeldenning/coexisting-angular-microfrontends
-> 参考官网地址：https://single-spa.js.org/docs/ecosystem-angular/#manual-installation
-> [APP_BASE_HREF](https://angular.io/api/common/APP_BASE_HREF)
-> [single-spa-angular](https://single-spa.js.org/docs/ecosystem-angular/#manual-installation)
+
+
+> 修改main.js文件进行注册
+
+```javascript
+import Vue from 'vue'
+import App from './App.vue'
+import singleSpaVue from "single-spa-vue";
+
+Vue.config.productionTip = false
+// el 为子项目待挂载到父项目的DOM节点！！！
+const vueOptions = {
+  el: "#vue",
+  render: h => h(App)
+};
+
+// 主应用注册成功后会在window下挂载singleSpaNavigate方法
+// 为了独立运行，避免子项目页面为空，
+// 判断如果不在微前端环境下进行独立渲染html
+if (!window.singleSpaNavigate) {
+  new Vue({
+    render: h => h(App),
+  }).$mount('#app')
+}
+
+const vueLifecycles = singleSpaVue({
+  Vue,
+  appOptions: vueOptions,
+});
+
+export const bootstrap = vueLifecycles.bootstrap; // 启动时
+export const mount = vueLifecycles.mount; // 挂载时
+export const unmount = vueLifecycles.unmount; // 卸载时
+
+export default vueLifecycles;
+```
+
+> 根目录创建vue.config.js修改webpack配置
+
+```javascript
+module.exports = {
+    /* 
+        重点：
+        设置publicPath，避免父项目加载子项目时，部分资源文件路径为父项目地址，导致请求文件失败。
+    */
+    publicPath: "//localhost:8080/",
+    configureWebpack: {
+        devtool: 'none', // 不打包sourcemap
+        output: {
+            library: "singleVue", // 导出名称
+            libraryTarget: "window", //挂载目标,可以在浏览器打印window.singleVue查看
+        }
+    },
+    devServer: {
+        contentBase: './',
+        compress: true,
+    }
+};
+```
+
+> 子项目改造我们整体可以分为两个步骤：
+>
+> 1. 子项目入口文件改造，注册微前端，确定子项目挂载节点；
+> 2. 子项目webpack出口文件改造，打包后在window下创建singleVue方法。
+
+
+
+##### 6.2.1 React子项目改造
+
+> 环境准备：
+
+```javascript
+yarn create react-app react  // 创建子项目
+yarn add single-spa-react // 安装single-spa-react
+
+// 项目目录结构
+├── public
+├── src
+│   ├── App.js
+│   ├── index.js
+│   └── serviceWorker.js
+├── config
+│   ├── jest
+│   ├── webpack.config.js
+│   └── webpackDevServer.config.js
+├── scripts
+│   ├── build.js
+│   ├── start.js
+│   └── test.js
+├── package.json
+├── README.md
+└── yarn.lock
+```
+
+> 修改index.js文件进行注册
+
+```javascript
+import Vue from 'vue'
+import App from './App.vue'
+import singleSpaVue from "single-spa-vue";
+
+Vue.config.productionTip = false
+// el 为子项目待挂载到父项目的DOM节点！！！
+const vueOptions = {
+  el: "#vue",
+  render: h => h(App)
+};
+
+// 主应用注册成功后会在window下挂载singleSpaNavigate方法
+// 为了独立运行，避免子项目页面为空，
+// 判断如果不在微前端环境下进行独立渲染html
+if (!window.singleSpaNavigate) {
+  new Vue({
+    render: h => h(App),
+  }).$mount('#app')
+}
+
+const vueLifecycles = singleSpaVue({
+  Vue,
+  appOptions: vueOptions,
+});
+
+export const bootstrap = vueLifecycles.bootstrap; // 启动时
+export const mount = vueLifecycles.mount; // 挂载时
+export const unmount = vueLifecycles.unmount; // 卸载时
+
+export default vueLifecycles;
+```
+
+> 修改项目启动端口号：
+
+```javascript
+// scripts文件夹内start.js文件
+- const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000
++ const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 5000;
+```
+
+
+
+> 修改webpack配置，修改config文件夹中webpack.config.js文件
+
+```javascript
+- publicPath:paths.publicUrlOrPath
++ publicPath: 'http://localhost:5000/',
++ library: "singleReact", // 导出名称
++ libraryTarget: "window", //挂载目标
+```
+
+>父项目首次加载子项目静态文件logo图片报错解决办法：
+>
+>1. 加载失败后，通过检查发现，父项目中加载子项目图片地址为：http://localhost:3000/static/media/logo.5d5d9eef.svg。
+>2. 此时父项目地址为：http://localhost:3000/，子项目地址为：http://localhost:5000/
+>3. 不难发现，logo图片请求地址应为子项目地址即http://localhost:5000/static/media/logo.5d5d9eef.svg
+>4. 静态资源最终访问路径 = output.publicPath + 资源loader或插件等配置路径，默认publicPath路径为网站根目录的位置，而在父项目加载子项目时，当前网站根目录为http://localhost:3000/
+>5. 可以通过将 output.publicPath设置为子项目跟目录http://localhost:5000/解决这个问题。
+
+
+
+##### 6.2.1 Angular子项目改造
+
+> 环境准备：
+
+```javascript
+npm install -g @angular/cli //全局安装angular/cli,直接安装报错
+// 报错信息 TypeError: Cannot read property 'flags' of undefined
+
+npm install @angular/cli@9.0.0 -g // 指定版本安装
+ng new angular-project // 创建项目
+
+// 项目目录结构
+├── e2e
+├── src
+│   ├── + `main.single-spa.ts`
+│   ├── + `single-spa`	
+│   │	├── + `single-spa-props.ts`
+│   │	└── + `asset-url.ts`
+│   ├── app
+│   │	├── + `empty-route`
+│   │	│	└── + `empty-route.component.ts`
+│   │	├──  empty-route.component.ts
+│   │	├──  app.component.ts
+│   │	└──  `app.module.ts` //use src/app/empty-route/ EmptyRouteComponent
+│   ├── assets
+│   ├── environments
+│   ├── index.html
+│   ├── polyfills.ts
+│   └── test.ts
+├── node_modules
+├── + `extra-webpack.config.js`
+├── package.json
+├── README.md
+├── angular.json
+└── yarn.lock
+```
 
 > [报错为：TypeError: Cannot read property 'flags' of undefined](https://stackoverflow.com/questions/49544854/typeerror-cannot-read-property-flags-of-undefined)
 
+- Install single-spa-angular.
+- Generate `single-spa-props.ts` in `src/single-spa/`
+- Generate `asset-url.ts` in `src/single-spa/`
+- Generate an EmptyRouteComponent in `src/app/empty-route/`, to be used in app-routing.module.ts.
+
+> 注册应用
 
 
-#### 3.3 改造优化
-
-##### 3.3.1 JS文件自动加载
-
-manifest.json生成 生成方法；manifest
-
-##### 3.3.2 JS文件自动加载
-
-
-
-
-
-
-
-#### 
-
-#####   
-
-
-[Vue-Cli项目如何查看依赖调用关系？](https://www.cnblogs.com/rever/p/10978703.html)
-[sourceMap是个啥？](https://segmentfault.com/a/1190000020213957)
-
-##### webpack build后生成的app、vendor、manifest三者有何职能不同？
-
-> [webpack build后生成的app、vendor、manifest三者有何职能不同？](https://www.jianshu.com/p/7a888571522d)
->
-
-##### webpack中loader（打包方案）
-
-因此，loader是一个打包方案，能对特定类型的文件用相应的方案进行打包。
-[Webpack教程四：Loader](https://blog.csdn.net/qq_35732147/article/details/90286681)
-[webpack学习笔记—优化缓存、合并、懒加载等](https://www.cnblogs.com/yangmin01/p/6290595.html)
-
-##### assetsPublicPath
-==publicPath属性==
-
-> webpack会在静态文件路径前面添加publicPath的值，当我们把资源放到CDN上的时候，把publicPath的值设为CDN的值就可以了。
-
-
-
-==打包上线容易遇到的路径引用问题:==
-
-> 首先检查请求是否合法：请求内容是什么，是请求错误还是代码错误。	
-> assetsPublicPath: 'http://127.0.0.1:8000/' 
-> [解决 vue-cli index.js dev 配置中 assetsPublicPath 的值不能填 "./" 的问题](https://blog.csdn.net/isyoungboy/article/details/84350256)
-
-```
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-
-extract-text-webpack-plugin
-
-new ExtractTextPlugin({
-  filename: utils.assetsPath('css/[name].min.css')
-}),
-```
-
-  singleSpa.registerApplication注册仅执行一次，再次运行是取之前js文件
 
 ```javascript
-js文件先于dom元素加载；
-vendor.js:19 	TypeError: Cannot convert undefined or null to object
-```
+// src/app/empty-route/empty-route.component.ts 文件内代码
 
-> [webpack + vue 项目 自定义 插件 解决 前端 JS 版本 更新 问题](https://www.cnblogs.com/phpdragon/p/7300736.html)
-> Webpack 是一个前端资源加载/打包工具。它将根据模块的依赖关系进行静态分析，然后将这些模块按照指定的规则生成对应的静态资源。
-> 它的异步加载原理是，事先将编译好后的静态文件，通过js对象映射，硬编码进打包后的 manifest.xxxx.js 文件中，然后通过JSONP原理按需加载每个chunk。
+import { Component } from '@angular/core';
 
-
-
-> [详解CommonsChunkPlugin的配置和用法](https://segmentfault.com/a/1190000012828879)
-
-
-
-> [webpack基础--代码分割和懒加载](https://blog.csdn.net/rainbow8590/article/details/81027696)
-
-> [彻底解决Webpack打包性能问题](https://zhuanlan.zhihu.com/p/21748318)
-
-
-
-> [ant design pro 如何使用 qiankun 做微前端（上）](https://zhuanlan.zhihu.com/p/93198281)
-
->  ==React项目中runtime-main.js也需要引入到项目中==
-
-```
- React项目中runtime-main.js也需要引入到项目中
- await runScript('http://127.0.0.1:8888/static/js/runtime-main.js');
- await runScript('http://127.0.0.1:8888/static/js/2.chunk.js');
- await runScript('http://127.0.0.1:8888/static/js/main.chunk.js');
+@Component({
+    selector: 'app2-empty-route',
+    template: '',
+})
+export class EmptyRouteComponent {
+}
 ```
 
 
 
-![这里写图片描述](https://img-blog.csdn.net/20180713104632583?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3JhaW5ib3c4NTkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+```javascript
+// src/app/app.module.ts 文件内代码
 
-![image-20200415212256372](C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200415212256372.png)
++ import { EmptyRouteComponent } from './empty-route/empty-route.component';
+@NgModule({
+  declarations: [
+    AppComponent,
+ +  EmptyRouteComponent
+  ],
+```
 
-CSS沙箱CSS modules 
-CSS处理用到postcss-loader，postcss-loader用到postcss，我们添加postcss的处理插件，为每一个CSS选择器都添加名为`.namespace-kaoqin`的根选择器，最后打包出来的CSS，如下所示：
 
-JS沙箱
 
-然后配置 nginx
+```javascript
+// src/single-spa/asset-url.ts 文件内代码
+
+export function assetUrl(url: string): string {
+    // @ts-ignore
+    const publicPath = __webpack_public_path__;
+    const publicPathSuffix = publicPath.endsWith('/') ? '' : '/';
+    const urlPrefix = url.startsWith('/') ? '' : '/'
+  
+    return `${publicPath}${publicPathSuffix}assets${urlPrefix}${url}`;
+  }
+```
+
+
+
+```javascript
+// src/single-spa/single-spa-props.ts 文件内代码
+import { ReplaySubject } from 'rxjs';
+import { AppProps } from 'single-spa';
+
+export const singleSpaPropsSubject = new ReplaySubject<SingleSpaProps>(1)
+export type SingleSpaProps = AppProps & {
+}
+```
+
+
+
+```javascript
+// src/main.singleSpa.ts 文件内代码
+
+import { enableProdMode, NgZone } from '@angular/core';
+
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { Router } from '@angular/router';
+import { AppModule } from './app/app.module';
+import { environment } from './environments/environment';
+import { singleSpaAngular } from 'single-spa-angular';
+import { singleSpaPropsSubject } from './single-spa/single-spa-props';
+
+if (environment.production) {
+    enableProdMode();
+}
+// if (!window.singleSpaNavigate) {
+platformBrowserDynamic().bootstrapModule(AppModule)
+    .catch(err => console.error(err));
+// }
+
+const lifecycles = singleSpaAngular({
+    bootstrapFunction: singleSpaProps => {
+        singleSpaPropsSubject.next(singleSpaProps);
+        return platformBrowserDynamic().bootstrapModule(AppModule);
+    },
+    template: '<app2-root />',
+    Router,
+    NgZone: NgZone,
+});
+
+export const bootstrap = lifecycles.bootstrap;
+export const mount = lifecycles.mount;
+export const unmount = lifecycles.unmount;
+```
+
+
+
+>修改angular.json为修改出口文件做准备工作
+
+```javascript
+npm i -D @angular-builders/custom-webpack //用于修改webpack 配置
+npm i -D @angular-builders/dev-server
+ "build": {
+        - "builder": "@angular-devkit/build-angular:browser",
+        + "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+          + "customWebpackConfig": {
+          +   "path": "./extra-webpack.config.js" // 读取文件，修改webpack配置
+          + },
+          + "deployUrl": "http://localhost:4000/", // 修改publicPath
+            "outputPath": "dist/Delete",
+            "index": "src/index.html",
+————————————————
+	"serve": {
+      -	"builder": "@angular-devkit/build-angular:dev-server",
+	  + "builder": "@angular-builders/custom-webpack:dev-server"
+		"options": {
+		"browserTarget": "Delete:build"
+	 },    
+————————————————        
+```
+
+
+
+> 设置出口文件：
+> 创建extra-webpack.config.js并进行配置
+
+```javascript
+module.exports = {
+  output: {
+    library: "singleAngular", // 导出名称
+    libraryTarget: "window", // 挂载目标
+  },
+}
+```
+
+
+
+> 参考文章：
+> [single-spa-angular](https://single-spa.js.org/docs/ecosystem-angular/#migrating-from-single-spa-angular3x-to-single-spa-angular4x)
+> [single-spa-angular示例代码地址](https://github.com/joeldenning/coexisting-angular-microfrontends)
+
+|          | angular/cli版本 | single-spa-angular版本 |
+| :------: | :-------------: | :--------------------: |
+| 官方示例 |      8.1.0      |         3.0.1          |
+| 本文示例 |      9.0.0      |           4            |
+
+
+
+
+
+### 6. 线上部署Nginx配置
+
+>  父项目加载过程中，全部请求：
+
+![image-20200514015629716](C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200514015629716.png)
+
+> 线上部署完成后`首个请求vue/`发生`nginx报错404 Not Found`，通过排查发现nginx查找路径错误：
+> 部署访问地址格式为xx.xx:0000/vue/#/app1
+> `vue:微前端应用名称;`
+> `app1：子项目路由`
+> Nginx报错分析：
+> 首次发起请求时，由于这里写法类似browerRouter，根据请求会在nginx根目录文件内查找/vue文件夹，并检查是否有index.html文件进行返回。
+> 具体步骤：xx.xx:0000/XX => nginx文件中XX文件夹 => 文件夹不存在返回404
+
+> 因为/vue只是为了注册应用，并不需要真正去nginx中的/vue下查找index.html，因为按照这个路径查找并不能查找成功，我们仍希望在原来根地址进行查找。
+> ngix 遇到/XXX这样地址会被当作代理，寻找对应文件夹，如果文件夹没有就报错404，但是实际我是希望去进入到我的项目里面，我自己做判断的
+
+> 解决方案：
+> 在带有/vue进行访问时，首先进行判断，再使用nginx进行重定向，定向为原根目录。
+> `注意事项：`
+> 此时进行重定向，但是我们并不希望url地址发生改变，所以我们需要使用rewrite "/xxx" /abc last;的这种跳转形式，但是这种重定向只能对站内url重写，如果rewrite第二个参数以http或者以https开头或者使用permanent都会导致url地址栏改变。（302,301等会修改地址栏的url）
+
+```javascript
+location /vue/ {	
+			root   /home/nginx/static/html/refining/;
+	      		rewrite ^/vue(.*) /;
+			index index.html index.htm;
+ 		}
+// 注意重定向保持url不变,
+
+```
+
+
+
+原本以为，这样就可以宣告成功了！！！但是现实总是残酷的。
+我们刷新浏览器使父项目重新加载子项目，发现父项目中加载子项目文件依然报错，或者返回html导致类型报错。![image-20200512153847346](C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512153847346.png)
+
+![](C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512153718893.png)
+
+通过查看请求可以发现，实际请求为：
+xx.xx:0000/vue/#/static/css/main.d6XXXXXXXXXX
+
+![image-20200512154155216](C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200512154155216.png)我们发现对子项目静态资源发生请求时，请求地址仍然有/vue，然而我们希望请求应该为：xx.xx:0000/static/css/main.d6XXXXXXXXXX，这样才会成功获取到静态资源。
+下面我们继续对静态资源进行重定向：
+
+```javascript
+location ~.*(gif|jpg|jpeg|bmp|png|ico|txt|js|css)$ {
+	root   /home/nginx/static/html/refining/;
+	rewrite ^/vue(.*) /$1 break;//$1 为匹配到的第一个参数，即去掉vue后的请求地址
+	index  index.html index.htm;
+}
+```
+
+>  其它参考配置：
 
 ```javascript
 server {
@@ -333,41 +719,47 @@ server {
 
 
 
-加载子应用的方式：
+### 7. 展望
 
-![image-20200415211849524](C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200415211849524.png)
+> #### 7.1 改造优化
+>
+> ##### 7.1.1  JS文件自动加载
+>
+> stats-webpack-plugin生成manifest.json，实现自动加载。
+>
+> ##### 7.1.2  CSS沙箱
+>
+> CSS处理用到postcss-loader，postcss-loader用到postcss，我们添加postcss的处理插件，为每一个CSS选择器都添加名为`.namespace-kaoqin`的根选择器，最后打包出来的CSS，如下所示：
+>
+> ##### 7.1.3  JS沙箱
+>
+> ##### 7.1.4  加载HTML方式加载子应用
+>
+> 接入地址只需配置一次，省略使用manifest动态加载，因为html本身就是一个完整的manifest.
 
 
 
 
+<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200514023422714.png" alt="image-20200514023422714" style="zoom:25%;" />
 
+<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200514023355235.png" style="zoom:25%;" />
 
+<img src="C:\Users\李子杰\AppData\Roaming\Typora\typora-user-images\image-20200514023342877.png" alt="image-20200514023342877" style="zoom:25%;" />
 
 
 
 ## <a id="title9"><font color="black">参考文章</font></a>
 
-- [微前端实践 ](https://juejin.im/post/5cadd7835188251b2f3a4bb0)
-
-- [微前端 —— portal项目](https://segmentfault.com/a/1190000019957130)
-
-- [全栈增长工程师](https://segmentfault.com/blog/phodal?page=1)(微前端如何落地？详细原理)
-
-- [命令行服务器（http-server)和跨域](https://blog.csdn.net/weixin_43310551/article/details/86304618)
-
 - [Single-Spa + Vue Cli 微前端落地指南 (项目隔离远程加载，自动引入)](https://juejin.im/post/5dfd8a0c6fb9a0165f490004#heading-9)
-
+- [微前端实践 ](https://juejin.im/post/5cadd7835188251b2f3a4bb0)
+- [微前端 —— portal项目](https://segmentfault.com/a/1190000019957130)
+- [全栈增长工程师](https://segmentfault.com/blog/phodal?page=1)(微前端如何落地？详细原理)
+- [命令行服务器（http-server)和跨域](https://blog.csdn.net/weixin_43310551/article/details/86304618)
 - [可能是你见过最完善的微前端解决方案](https://zhuanlan.zhihu.com/p/78362028)
-
 - [前端分享会--微前端改造初探](https://www.jianshu.com/p/81350e1068b6)
-
 - [带你手写微前端框架](https://github.com/YataoZhang/my-single-spa/issues/4)
-
 - [深入剖析Vue源码 - 完整挂载流程和模板编译](https://juejin.im/post/5ccafd4d51882540d472a90e)
-
-  
-
-- 
+- [ant design pro 如何使用 qiankun 做微前端（上）](https://zhuanlan.zhihu.com/p/93198281)
 
 
 ## <a id="title10"><font color="black">参考代码</font></a>

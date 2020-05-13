@@ -10,11 +10,10 @@ import { singleSpaPropsSubject } from './single-spa/single-spa-props';
 
 if (environment.production) {
     enableProdMode();
-
 }
 // if (!window.singleSpaNavigate) {
-    platformBrowserDynamic().bootstrapModule(AppModule)
-        .catch(err => console.error(err));
+platformBrowserDynamic().bootstrapModule(AppModule)
+    .catch(err => console.error(err));
 // }
 
 const lifecycles = singleSpaAngular({
@@ -25,7 +24,6 @@ const lifecycles = singleSpaAngular({
     template: '<app2-root />',
     Router,
     NgZone: NgZone,
-    domElementGetter: () => document.getElementById("angular-app") // 指定要挂载到哪个dom元素上面
 });
 
 export const bootstrap = lifecycles.bootstrap;
